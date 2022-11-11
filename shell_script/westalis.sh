@@ -18,6 +18,7 @@ subnet 10.47.1.0 netmask 255.255.255.0 {
 }
 subnet 10.47.3.0 netmask 255.255.255.0 {
     range  10.47.3.10 10.47.3.30;
+    range  10.47.3.60 10.47.3.85;
     option routers 10.47.3.1;
     option broadcast-address 10.47.3.255;
     option domain-name-servers 10.47.2.2;

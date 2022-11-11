@@ -56,9 +56,15 @@ Pada Proxy Server di **Berlint**, Loid berencana untuk mengatur bagaimana Client
 5. Setelah diterapkan, ternyata peraturan nomor (4) mengganggu produktifitas saat hari kerja, dengan demikian pembatasan kecepatan hanya diberlakukan untuk pengaksesan internet pada hari libur
 
 Setelah proxy **Berlint** diatur oleh Loid, dia melakukan pengujian dan mendapatkan hasil sesuai tabel berikut.
+| Aksi | Senin(10.00) | Senin(20.00) | Sabtu(10.00) |
+| ---  | --- | --- | --- |
+| Akses internet (HTTP) |X|X|X|
+| Akses internet (HTTPS) |X|V|V|
+|Akses loid-work.com dan franky-work.com|V|X|X|
+|Speed limit (128Kbps)|tidak bisa akses|x (speed tidak dibatasi)|V|
 
-x: tidak, v: iya
+X: tidak, V: iya
 
 ## Penyelesaian Soal 8
 # kendala
-Tidak ada 
+Nomor 8
