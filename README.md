@@ -24,17 +24,129 @@ Kelompok ITB05
 # Soal-1
 Loid bersama Franky berencana membuat peta tersebut dengan kriteria **WISE** sebagai DNS Server, **Westalis** sebagai DHCP Server, **Berlint** sebagai Proxy Server
 ## Penyelesaian Soal 1
+Topologi yang kami gunakan adalah modifikasi dari topologi modul 2 sebelumnya, berikut ini ada topologi yang kami buat
+![topologi_kami](img/soal1.png)
 # Soal-2
 **Ostania** sebagai DHCP Relay. Loid dan Franky menyusun peta tersebut dengan hati-hati dan teliti.
 ## Penyelesaian Soal 2
+Untuk membuat **Ostania** menjadi DHCP Relay, Pertama kami install DHCP relay dengan cara berikut ini
+```
+apt-get update
+apt-get install isc-dhcp-relay -y
+```
+Kemudian dimasukkan setting **SERVERS**, **INTERFACES**, dan **OPTIONS** ke `/etc/default/isc-dhcp-relay` dan direstart dhcp relaynya dengan `service isc-dhcp-relay restart`
+```
+echo "SERVERS=\"10.47.2.4\"
+INTERFACES=\"eth1 eth3 eth2\"
+OPTIONS=\"\"" > /etc/default/isc-dhcp-relay
+service isc-dhcp-relay restart
+```
+**SERVERS** yang dimaksud adalah DHCP server dengan IP **10.47.2.4**
+
+Pengecekan **DHCP relay** dilakukan dengan `dhcrelay --version`, dan hasilnya adalah sebagai berikut ini
+![soal2](img/soal2.png)
 # Soal-3
 Ada beberapa kriteria yang ingin dibuat oleh Loid dan Franky, yaitu:
 1. Semua client yang ada **HARUS** menggunakan konfigurasi IP dari DHCP Server.
 2. Client yang melalui Switch1 mendapatkan range IP dari 10.47.1.50 - 10.47.1.88 dan 10.47.1.120 - 10.47.1.155
 ## Penyelesaian Soal 3
-# Soal-4
+Agar semua node dapat diberikan IP otomatis oleh DHCP Server, maka konfigurasi **network configuration** pada **DHCP Client** adalah sebagai berikut 
+```
+auto eth0
+iface eth0 inet dhcp
+```
+Pada node **Westalis** akan dilakukan install **DHCP server** dengan cara berikut ini 
+```
+apt-get update
+apt-get install isc-dchp-server -y
+```
+Setelah itu disetting **INTERFACES** nya pada `/etc/default/isc-dhcp-server` dengan cara seperti berikut ini
+```
+echo "INTERFACES=\"eth0\"" > /etc/default/isc-dhcp-server
+```
+Selanjutnya pada `/etc/dhcp/dhcpd.conf` dimasukkan konfigurasi sebagai berikut ini
+```
+echo "subnet 10.47.2.0 netmask 255.255.255.0 {
+}
+subnet 10.47.1.0 netmask 255.255.255.0 {
+    range 10.47.1.50 10.47.1.88;
+    range 10.47.1.120 10.47.1.155;
+    option routers 10.47.1.1;
+    option broadcast-address 10.47.1.255;
+    option domain-name-servers 10.47.2.2;
+    default-lease-time 300;
+    max-lease-time 6900;
+}
+subnet 10.47.3.0 netmask 255.255.255.0 {
+    range  10.47.3.10 10.47.3.30;
+    range  10.47.3.60 10.47.3.85;
+    option routers 10.47.3.1;
+    option broadcast-address 10.47.3.255;
+    option domain-name-servers 10.47.2.2;
+    default-lease-time 600;
+    max-lease-time 6900;
+}
+host Eden {
+    hardware ethernet 52:d7:62:29:f2:7f;
+    fixed-address 10.47.3.13;
+}
+" > /etc/dhcp/dhcpd.conf
+service isc-dhcp-server restart
+```
+Pengecekan **DHCP server** dapat dilakukan dengan `service isc-dhcp-server status`, dan hasilnya adalah sebagai berikut ini
+![soal2](img/soal3_0.png)
+
+Dikarenakan pada **10.47.2.0** tidak diperlukan DHCP karena isinya adalah semua server, maka subnet tersebut dikosongkan
+
+Untuk subnet **10.47.1.0** konfigurasinya adalah sebagai berikut
+```
+subnet 10.47.1.0 netmask 255.255.255.0 {
+    range 10.47.1.50 10.47.1.88;
+    range 10.47.1.120 10.47.1.155;
+    option routers 10.47.1.1;
+    option broadcast-address 10.47.1.255;
+    option domain-name-servers 10.47.2.2;
+    default-lease-time 300;
+    max-lease-time 6900;
+}
+```
+range menunjukan IP adress yang bisa diberikan untuk setiap devices yang melalui subnet tersebut (**10.47.1.50** sampai **10.47.1.88** dan **10.47.1.120** sampai **10.47.1.155**)
+
+Untuk **routers** dan **broadcast-address** disesuaikan dengan subnetnya (routernya **10.47.1.1** dan broadcastnya **10.47.1.255**)
+
+Domain name server yang digunakan adalah **WISE** dengan IP **10.47.2.2** (pada option domain-name-servers 10.47.2.2)
+
+Hasil pada node **Garden**
+![soal3.1](img/soal3_1.png)
+Hasil pada node **SSS**
+![soal3.2](img/soal3_2.png)
+# Soal-4 
+## (Revisi)
 3. Client yang melalui Switch3 mendapatkan range IP dari 10.47.3.10 - 10.47.3.30 dan 10.47.3.60 - 10.47.3.85
 ## Penyelesaian Soal 4
+Untuk subnet **10.47.3.0** konfigurasinya adalah sebagai berikut
+```
+subnet 10.47.3.0 netmask 255.255.255.0 {
+    range  10.47.3.10 10.47.3.30;
+    range  10.47.3.60 10.47.3.85;
+    option routers 10.47.3.1;
+    option broadcast-address 10.47.3.255;
+    option domain-name-servers 10.47.2.2;
+    default-lease-time 600;
+    max-lease-time 6900;
+}
+```
+range menunjukan IP adress yang bisa diberikan untuk setiap devices yang melalui subnet tersebut (**10.47.3.10** sampai **10.47.3.30** dan **10.47.3.60** sampai **10.47.3.85**)
+
+Untuk **routers** dan **broadcast-address** disesuaikan dengan subnetnya (routernya **10.47.3.1** dan broadcastnya **10.47.3.255**)
+
+Domain name server yang digunakan adalah **WISE** dengan IP **10.47.2.2** (pada option domain-name-servers 10.47.2.2)
+
+Setelah disetting seperti itu, maka DHCP server akan  di-*restart* dengan perintah `service isc-dhcp-server restart`
+Hasil pada node **NewstonCastle**
+![soal4.1](img/soal4_1.png)
+Hasil pada node **KemonoPark**
+![soal4.2](img/soal4_2.png)
 # Soal-5
 4. Client mendapatkan DNS dari WISE dan client dapat terhubung dengan internet melalui DNS tersebut.
 ## Penyelesaian Soal 5
