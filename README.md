@@ -25,6 +25,7 @@ Kelompok ITB05
 Loid bersama Franky berencana membuat peta tersebut dengan kriteria **WISE** sebagai DNS Server, **Westalis** sebagai DHCP Server, **Berlint** sebagai Proxy Server
 ## Penyelesaian Soal 1
 Topologi yang kami gunakan adalah modifikasi dari topologi modul 2 sebelumnya, berikut ini ada topologi yang kami buat
+
 ![topologi_kami](img/soal1.png)
 # Soal-2
 **Ostania** sebagai DHCP Relay. Loid dan Franky menyusun peta tersebut dengan hati-hati dan teliti.
@@ -44,6 +45,7 @@ service isc-dhcp-relay restart
 **SERVERS** yang dimaksud adalah DHCP server dengan IP **10.47.2.4**
 
 Pengecekan **DHCP relay** dilakukan dengan `dhcrelay --version`, dan hasilnya adalah sebagai berikut ini
+
 ![soal2](img/soal2.png)
 # Soal-3
 Ada beberapa kriteria yang ingin dibuat oleh Loid dan Franky, yaitu:
@@ -94,6 +96,7 @@ host Eden {
 service isc-dhcp-server restart
 ```
 Pengecekan **DHCP server** dapat dilakukan dengan `service isc-dhcp-server status`, dan hasilnya adalah sebagai berikut ini
+
 ![soal2](img/soal3_0.png)
 
 Dikarenakan pada **10.47.2.0** tidak diperlukan DHCP karena isinya adalah semua server, maka subnet tersebut dikosongkan
@@ -117,8 +120,11 @@ Untuk **routers** dan **broadcast-address** disesuaikan dengan subnetnya (router
 Domain name server yang digunakan adalah **WISE** dengan IP **10.47.2.2** (pada option domain-name-servers 10.47.2.2)
 
 Hasil pada node **Garden**
+
 ![soal3.1](img/soal3_1.png)
+
 Hasil pada node **SSS**
+
 ![soal3.2](img/soal3_2.png)
 # Soal-4 
 ## (Revisi)
@@ -144,8 +150,11 @@ Domain name server yang digunakan adalah **WISE** dengan IP **10.47.2.2** (pada 
 
 Setelah disetting seperti itu, maka DHCP server akan  di-*restart* dengan perintah `service isc-dhcp-server restart`
 Hasil pada node **NewstonCastle**
+
 ![soal4.1](img/soal4_1.png)
+
 Hasil pada node **KemonoPark**
+
 ![soal4.2](img/soal4_2.png)
 # Soal-5
 4. Client mendapatkan DNS dari WISE dan client dapat terhubung dengan internet melalui DNS tersebut.
