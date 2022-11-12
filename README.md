@@ -156,15 +156,106 @@ Hasil pada node **NewstonCastle**
 Hasil pada node **KemonoPark**
 
 ![soal4.2](img/soal4_2.png)
+
 # Soal-5
+
 4. Client mendapatkan DNS dari WISE dan client dapat terhubung dengan internet melalui DNS tersebut.
+
 ## Penyelesaian Soal 5
+
+File **/etc/bind/named.conf.options** pada WISE disetting sebagai berikut
+
+```bash
+options {
+        directory "/var/cache/bind";
+
+        // If there is a firewall between you and nameservers you want
+        // to talk to, you may need to fix the firewall to allow multiple
+        // ports to talk.  See http://www.kb.cert.org/vuls/id/800113
+
+        // If your ISP provided one or more IP addresses for stable
+        // nameservers, you probably want to use them as forwarders.
+        // Uncomment the following block, and insert the addresses replacing
+
+        forwarders {
+                8.8.8.8; 
+                8.8.4.4;
+        // };
+
+        //dnssec-validation auto;
+        allow-query{any;};
+
+        auth-nxdomain no;    # conform to RFC1035
+        listen-on-v6 { any; };
+};
+```
+
+**Testing**
+
+![Testing Soal 5](img/soal5-testing.png)
+
 # Soal-6
+
 5. Lama waktu DHCP server meminjamkan alamat IP kepada Client yang melalui Switch1 selama 5 menit sedangkan pada client yang melalui Switch3 selama 10 menit. Dengan waktu maksimal yang dialokasikan untuk peminjaman alamat IP selama 115 menit.
+
 ## Penyelesaian Soal 6
+
+Waktu yang digunakan adalah waktu dalam detik, sehingga nilai yang digunakan adalah
+- 10 menit = 600 detik
+- 5 menit = 300 detik
+- 115 menit = 6900 detik
+
+```bash
+subnet 10.47.1.0 netmask 255.255.255.0 {
+    range  10.47.1.50 10.47.1.88;
+    range  10.47.1.120 10.47.1.155;
+    option routers 10.47.1.1;
+    option broadcast-address 10.47.1.255;
+    option domain-name-servers 10.47.2.2;
+    default-lease-time 300;
+    max-lease-time 6900;
+}
+```
+
+```bash
+subnet 10.47.3.0 netmask 255.255.255.0 {
+    range  10.47.3.10 10.47.3.30;
+    range  10.47.3.60 10.47.3.85;
+    option routers 10.47.3.1;
+    option broadcast-address 10.47.3.255;
+    option domain-name-servers 10.47.2.2;
+    default-lease-time 600;
+    max-lease-time 6900;
+}
+```
+
 # Soal-7
+
 Loid dan Franky berencana menjadikan **Eden** sebagai server untuk pertukaran informasi dengan **alamat IP yang tetap** dengan IP 10.47.3.13 
+
 ## Penyelesaian Soal 7
+
+Pada **/etc/dhcp/dhcpd.conf** ditambahkan konfigurasi berikut
+
+```bash
+host Eden {
+    hardware ethernet 86:08:ac:da:99:f7;
+    fixed-address 10.47.3.13;
+}
+```
+
+Alamat hardware ethernet didapat dari perintah berikut pada Eden
+
+```bash
+ip a
+```
+
+![ip -a Eden](img/soal7-ip-eden.png)
+
+**Testing**
+
+![Testing IP Eden](img/soal7-testing.png)
+
 # Soal-8
 **SSS, Garden, dan Eden** digunakan sebagai client **Proxy** agar pertukaran informasi dapat terjamin keamanannya, juga untuk mencegah kebocoran data.
 
