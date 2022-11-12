@@ -278,5 +278,32 @@ Setelah proxy **Berlint** diatur oleh Loid, dia melakukan pengujian dan mendapat
 X: tidak, V: iya
 
 ## Penyelesaian Soal 8
+
+Setelah meng-install squid pada Berlint, lakukan konfigurasi berikut :
+
+Buat file di `/etc/squid/squid.conf` lalu isi file dengan kode berikut
+```
+include /etc/squid/acl.conf
+
+
+http_access allow AVAILABLE_WORKING
+http_access deny all
+
+http_port 8080
+visible_hostname Berlint
+http_access allow all
+```
+
+Setelah di-save dan restart squid, maka client tidak dapat mengakses HTTP, hanya dapat mengakses via HTTPS
+
+**Testing**
+
+via HTTP
+![](img/soal8.png)
+
+via HTTPS
+![](img/soal8_1.png)
+
 # kendala
-Nomor 8
+
+Untuk bagian proxy, kami masih terkendala mengenai kodingan logic dari rules yang diberikan jika diterapkan ke squid. 
